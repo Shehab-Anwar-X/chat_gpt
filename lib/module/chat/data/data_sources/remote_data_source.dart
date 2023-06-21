@@ -5,7 +5,7 @@ import 'base/base_data_source.dart';
 import 'package:http/http.dart' as http;
 
 const _apiUrl = 'https://api.openai.com/v1/chat/completions';
-const _apiKey = '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';
+const _apiKey = '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';
 
 // ToDo: You must inject http client and refactor the code.
 // It's a simple example until refactor the code.
@@ -26,7 +26,6 @@ class ChatRemoteDataSource extends BaseChatDataSource {
         body: jsonEncode({
           "model": "gpt-3.5-turbo",
           "messages": [
-            {"role": "system", "content": "You are a helpful assistant."},
             {"role": "user", "content": creationData.message}
           ]
         }),
@@ -37,6 +36,8 @@ class ChatRemoteDataSource extends BaseChatDataSource {
       } else {
         throw 'Error: ${response.statusCode}';
       }
+    } on String catch (_) {
+      rethrow;
     } catch (e) {
       throw 'Error: $e';
     }

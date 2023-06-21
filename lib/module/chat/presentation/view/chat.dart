@@ -20,22 +20,34 @@ class _ChatViewState extends State<ChatView> {
   final _messages = <String>[];
 
   void _sendMessage() async {
-    final message = _questionController.text;
-    _questionController.clear();
+    try {
+      final message = _questionController.text;
+      _questionController.clear();
 
-    setState(() => _messages.add(message));
+      setState(() => _messages.add(message));
 
-    const usecase = SendMessageUseCase(
-      repository: ChatRepository(dataSource: ChatRemoteDataSource()),
-    );
+      const usecase = SendMessageUseCase(
+        repository: ChatRepository(dataSource: ChatRemoteDataSource()),
+      );
 
-    final responseMessage = await usecase(
-      creationData: MessageCreationData(message: message),
-    );
+      final responseMessage = await usecase(
+        creationData: MessageCreationData(message: message),
+      );
 
-    setState(() {
-      _messages.add(responseMessage.choices.first.message.content);
-    });
+      setState(() {
+        _messages.add(responseMessage.choices.first.message.content);
+      });
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(e.toString()),
+          action: SnackBarAction(
+            label: 'Ok',
+            onPressed: () {},
+          ),
+        ),
+      );
+    }
   }
 
   @override
